@@ -37,5 +37,59 @@
     <!-- Original text link removed -->
   </div>
   <script src="script.js"></script>
+  <!-- Timer UI -->
+<div id="timer" style="
+  position: fixed; 
+  top: 20px; 
+  right: 20px; 
+  background-color: #333; 
+  color: #fff; 
+  padding: 10px 20px; 
+  border-radius: 8px; 
+  font-size: 18px; 
+  z-index: 999;">
+  Time Left: <span id="time">05:00</span>
+</div>
+
+<script>
+  // Initialize 5 minutes
+  let totalTime = 5 * 60; 
+  let warningShown = false;
+
+  function startTimer() {
+    const timeDisplay = document.getElementById("time");
+    const interval = setInterval(() => {
+      const minutes = Math.floor(totalTime / 60);
+      const seconds = totalTime % 60;
+      timeDisplay.textContent = 
+        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+      // Warn at 1 minute
+      if (totalTime === 60 && !warningShown) {
+        document.getElementById("timer").style.backgroundColor = "red";
+        warningShown = true;
+      }
+
+      // Timeout: auto-submit
+      if (totalTime <= 0) {
+        clearInterval(interval);
+        alert("Time's up! Auto-submitting...");
+        
+        // Try submitting form
+        const form = document.querySelector("form");
+        if (form) form.submit();
+
+        // If no form, simulate button click
+        const submitBtn = document.querySelector("button[type='submit'], .submit-btn");
+        if (submitBtn) submitBtn.click();
+      }
+
+      totalTime--;
+    }, 1000);
+  }
+
+  window.onload = startTimer;
+</script>
+
 </body>
 </html>
